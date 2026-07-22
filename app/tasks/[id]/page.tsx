@@ -2,8 +2,15 @@ import { tasks } from '../../../lib/db';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 
-export default function TaskDetails({ params }: { params: { id: string } }) {
-    const task = tasks.find((t) => t.id === params.id);
+export default async function TaskDetails({
+    params
+}: {
+    params: Promise<{ id: string }>
+}) {
+    // NOWE: Czekamy na rozpakowanie ID z paska adresu
+    const resolvedParams = await params;
+
+    const task = tasks.find((t) => t.id === resolvedParams.id);
 
     if (!task) {
         notFound();
