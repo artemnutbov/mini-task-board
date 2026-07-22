@@ -1,5 +1,6 @@
 import { tasks } from '../lib/db';
 import TaskCard from '../components/TaskCard';
+import TaskForm from '../components/TaskForm';
 import Link from 'next/link';
 import { TaskStatus } from '../types';
 
@@ -26,6 +27,8 @@ export default async function HomePage({
       <h1 className="text-3xl font-bold mb-6">Mini Task Board</h1>
 
       { }
+      <TaskForm />
+
       <div className="flex gap-2 mb-8">
         <Link href="/" className={getButtonClass()}>Wszystkie</Link>
         <Link href="/?status=todo" className={getButtonClass('todo')}>Do zrobienia</Link>
