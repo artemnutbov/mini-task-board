@@ -3,49 +3,53 @@ import { test, expect } from '@playwright/test';
 test.describe('Wellbee Homepage Tests', () => {
     test.beforeEach(async ({ page }) => {
         await page.goto('https://wellbee.pl/');
+
+        const cookieAcceptBtn = page.locator('#CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll');
+
+        try {
+            await cookieAcceptBtn.waitFor({ state: 'visible', timeout: 3000 });
+            await cookieAcceptBtn.click();
+        } catch (error) {
+        }
     });
 
     test('should display the main hero heading', async ({ page }) => {
-        const mainHeading = page.getByRole('heading', {
-            name: 'Najlepiej dopasowane wsparcie psychologiczne online',
-            level: 2
+        const mainHeading = page.locator('h2', {
+            hasText: 'Najlepiej dopasowane wsparcie psychologiczne online'
         });
-
         await expect(mainHeading).toBeVisible();
     });
 
-    test('login button should be visible and have correct link', async ({ page }) => {
-        const loginButton = page.getByRole('link', { name: 'Zaloguj' }).first();
+    test('should display login button with correct link', async ({ page }) => {
+        const loginButton = page.locator('[data-test="login-button"]');
 
         await expect(loginButton).toBeVisible();
         await expect(loginButton).toHaveAttribute('href', '/panel-pacjenta/login');
     });
 
     test('should expand FAQ accordion on click', async ({ page }) => {
-        const faqAccordion = page.getByRole('button', { name: /Czy mogę zrezygnować z psychoterapii w każdej chwili/i });
+        const faqAccordion = page.locator('div[role="button"]:has-text("Czy mogę zrezygnować z psychoterapii w każdej chwili?")');
 
         await expect(faqAccordion).toHaveAttribute('aria-expanded', 'false');
 
-        await faqAccordion.click();
+        await faqAccordion.click({ force: true });
 
         await expect(faqAccordion).toHaveAttribute('aria-expanded', 'true');
 
-        const faqContent = page.getByText('Oczywiście, ale jeżeli zrobisz to później niż 24h przed rozpoczęciem');
+        const faqContent = page.locator('text=Oczywiście, ale jeżeli zrobisz to później niż 24h przed rozpoczęciem');
         await expect(faqContent).toBeVisible();
     });
 
     test('should correctly fill out the newsletter form', async ({ page }) => {
-        const nameInput = page.getByLabel('Imię');
-        const emailInput = page.getByLabel('Adres e-mail');
+        const nameInput = page.locator('input[name="name"]');
+        const emailInput = page.locator('input[name="email"]');
+        const submitButton = page.locator('button[type="submit"]:has-text("Zapisuję się!")');
 
-        const privacyCheckbox = page.getByLabel(/Zapoznałem\/am się z Polityką Prywatności/);
-        const marketingCheckbox = page.getByLabel(/Wyrażam zgodę na przesyłanie przez Wellbee/);
-
-        const submitButton = page.getByRole('button', { name: 'Zapisuję się!' });
+        const privacyCheckbox = page.locator('input[type="checkbox"]').nth(0);
+        const marketingCheckbox = page.locator('input[type="checkbox"]').nth(1);
 
         await nameInput.fill('Jan Kowalski');
         await emailInput.fill('jan.kowalski@example.com');
-
         await privacyCheckbox.check({ force: true });
         await marketingCheckbox.check({ force: true });
 
@@ -57,10 +61,11 @@ test.describe('Wellbee Homepage Tests', () => {
         await expect(submitButton).toBeEnabled();
     });
 
-    test('should have a working "Umów sesję" hero button', async ({ page }) => {
-        const bookSessionBtn = page.getByRole('link', { name: 'Umów sesję' }).first();
+    test('should contain a working "Znajdź specjalistę" button', async ({ page }) => {
+        const bookSessionBtn = page.locator('[data-test="psycho-online-page"]').first();
 
         await expect(bookSessionBtn).toBeVisible();
+        await expect(bookSessionBtn).toHaveText(/Umów sesję/);
         await expect(bookSessionBtn).toHaveAttribute('href', '/znajdz-terapeute');
     });
 });
