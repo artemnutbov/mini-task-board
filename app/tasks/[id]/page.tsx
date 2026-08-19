@@ -1,15 +1,16 @@
 import { tasks } from '../../../lib/db';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { buttonVariants } from '@/components/ui/button';
 
 export default async function TaskDetails({
     params
 }: {
     params: Promise<{ id: string }>
 }) {
-    // NOWE: Czekamy na rozpakowanie ID z paska adresu
     const resolvedParams = await params;
-
     const task = tasks.find((t) => t.id === resolvedParams.id);
 
     if (!task) {
@@ -17,20 +18,27 @@ export default async function TaskDetails({
     }
 
     return (
-        <main className="max-w-2xl mx-auto p-8">
-            <Link href="/" className="text-blue-500 mb-4 inline-block hover:underline">
+        <main className="max-w-2xl mx-auto p-4 md:p-8">
+            <Link
+                href="/"
+                className={buttonVariants({ variant: 'ghost', className: 'mb-4 -ml-4' })}
+            >
                 &larr; Powrót do listy
             </Link>
 
-            <div className="border p-6 rounded-lg bg-white shadow-sm mt-4">
-                <h1 className="text-2xl font-bold">{task.title}</h1>
-                <div className="my-4">
-                    <span className="bg-gray-200 px-3 py-1 rounded-full text-sm">
-                        Status: {task.status}
-                    </span>
-                </div>
-                <p className="text-gray-700">{task.description}</p>
-            </div>
+            <Card>
+                <CardHeader>
+                    <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
+                        <CardTitle className="text-2xl">{task.title}</CardTitle>
+                        <Badge variant="secondary" className="text-sm">Status: {task.status}</Badge>
+                    </div>
+                </CardHeader>
+                <CardContent>
+                    <p className="text-muted-foreground whitespace-pre-wrap leading-relaxed">
+                        {task.description}
+                    </p>
+                </CardContent>
+            </Card>
         </main>
     );
 }

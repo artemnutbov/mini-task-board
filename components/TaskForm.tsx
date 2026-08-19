@@ -1,47 +1,48 @@
 import { addTaskAction } from '../lib/actions';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function TaskForm() {
     return (
-        <form action={addTaskAction} className="border p-6 rounded-lg bg-gray-50 mb-8 space-y-4 shadow-sm">
-            <h2 className="font-bold text-xl mb-2">Dodaj nowe zadanie</h2>
+        <Card className="mb-8">
+            <CardHeader>
+                <CardTitle>Dodaj nowe zadanie</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <form action={addTaskAction} className="space-y-4">
+                    <div>
+                        <label className="block text-sm font-medium mb-1">Tytuł</label>
+                        <Input name="title" required placeholder="Wpisz tytuł zadania..." />
+                    </div>
 
-            <div>
-                <label className="block text-sm font-medium mb-1">Tytuł</label>
-                <input
-                    name="title"
-                    required
-                    className="border w-full p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-            </div>
+                    <div>
+                        <label className="block text-sm font-medium mb-1">Opis</label>
+                        <Textarea name="description" required rows={3} placeholder="Krótki opis zadania..." />
+                    </div>
 
-            <div>
-                <label className="block text-sm font-medium mb-1">Opis</label>
-                <textarea
-                    name="description"
-                    required
-                    rows={3}
-                    className="border w-full p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-            </div>
+                    <div>
+                        <label className="block text-sm font-medium mb-1">Status</label>
+                        { }
+                        <Select name="status" defaultValue="todo">
+                            <SelectTrigger>
+                                <SelectValue placeholder="Wybierz status" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="todo">Do zrobienia</SelectItem>
+                                <SelectItem value="in-progress">W trakcie</SelectItem>
+                                <SelectItem value="done">Zrobione</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
 
-            <div>
-                <label className="block text-sm font-medium mb-1">Status</label>
-                <select
-                    name="status"
-                    className="border w-full p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                    <option value="todo">Do zrobienia</option>
-                    <option value="in-progress">W trakcie</option>
-                    <option value="done">Zrobione</option>
-                </select>
-            </div>
-
-            <button
-                type="submit"
-                className="bg-blue-600 text-white font-medium px-4 py-2 rounded hover:bg-blue-700 transition-colors"
-            >
-                Dodaj zadanie
-            </button>
-        </form>
+                    <Button type="submit" className="w-full">
+                        Dodaj zadanie
+                    </Button>
+                </form>
+            </CardContent>
+        </Card>
     );
 }
